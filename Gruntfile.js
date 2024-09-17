@@ -122,6 +122,9 @@ module.exports = grunt => {
         },
 
         clean: {
+            tanspiled: [
+                'client/lib/transpiled/**',
+            ],
             start: [
                 'build/EspoCRM-*',
                 'client/lib/*',
@@ -141,6 +144,9 @@ module.exports = grunt => {
                     '!build/tmp/client/custom/modules',
                     'build/tmp/client/custom/modules/*',
                     '!build/tmp/client/custom/modules/dummy.txt',
+                    'build/tmp/client/modules/crm/src',
+                    'build/tmp/client/lib/original',
+                    'build/tmp/client/modules/crm/lib/original',
                     'build/tmp/client/lib/original/espo.js',
                     'build/tmp/client/lib/original/espo-*.js',
                     '!build/tmp/client/lib/original/espo-funnel-chart.js',
@@ -186,7 +192,6 @@ module.exports = grunt => {
                 expand: true,
                 cwd: 'client',
                 src: [
-                    'src/**',
                     'res/**',
                     'fonts/**',
                     'modules/**',
@@ -500,6 +505,7 @@ module.exports = grunt => {
         'less',
         'cssmin',
         'prepare-lib-original',
+        'clean:tanspiled',
         'transpile',
         'bundle',
         'bundle-templates',
