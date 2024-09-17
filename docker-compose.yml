@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+
+  mysql_crm:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: espocrm
+      MYSQL_USER: espocrm
+      MYSQL_PASSWORD: bfc99c6eb5980b2f3fa9621ac2ea5f1b
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+
+  espocrm:
+    build: .
+    container_name: espocrm
+    depends_on:
+      - mysql_crm
+    environment:
+      ESPOCRM_DATABASE_PLATFORM: Mysql
+      ESPOCRM_DATABASE_HOST: mysql_crm
+      ESPOCRM_DATABASE_USER: espocrm
+      ESPOCRM_DATABASE_PASSWORD: bfc99c6eb5980b2f3fa9621ac2ea5f1b
+      ESPOCRM_ADMIN_USERNAME: admin
+      ESPOCRM_ADMIN_PASSWORD: password
+      ESPOCRM_SITE_URL: "http://localhost:8080"
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+    restart: always
+
+volumes:
+  mysql:
+
