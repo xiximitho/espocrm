@@ -16,7 +16,7 @@ services:
     restart: always
 
   espocrm:
-    build: .
+    image: felipepratica/crm:latest
     container_name: espocrm
     depends_on:
       - mysql_crm

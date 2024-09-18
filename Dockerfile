@@ -29,20 +29,34 @@ RUN a2enmod rewrite
 
 # Configurações de permissões
 RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
+
+# Copiar os arquivos do projeto para o container
+COPY ./build/EspoCRM-8.4.1 /var/www/html
+
 # Definir o diretório de trabalho
 WORKDIR /var/www/html
 
-# Copiar os arquivos do projeto para o container
-COPY . /var/www/html
+# Adicionar as configurações do PHP
+RUN { \
+    echo 'expose_php = Off'; \
+    echo 'display_errors = Off'; \
+    echo 'display_startup_errors = Off'; \
+    echo 'log_errors = On'; \
+    echo 'memory_limit=256M'; \
+    echo 'max_execution_time=180'; \
+    echo 'max_input_time=180'; \
+    echo 'post_max_size=30M'; \
+    echo 'upload_max_filesize=30M'; \
+} > ${PHP_INI_DIR}/conf.d/espocrm.ini
 
 # Instalar dependências do Composer (se houver)
-RUN composer install
-RUN npm install
-RUN npm run build
+#RUN composer install
+#RUN npm install
+#RUN npm run build
 
 RUN cd /var/www/html && find data -type d -exec chmod 775 {} + && chown -R 33:33 .;
 # Configurar o cron para rodar o EspoCRM
-#RUN echo "* * * * * cd /var/www/html; /usr/local/bin/php -f cron.php > /dev/null 2>&1" >> /etc/crontab
+RUN echo "* * * * * cd /var/www/html; /usr/local/bin/php -f cron.php > /dev/null 2>&1" >> /etc/crontab
 
 # Expor a porta 80 para o Apache
 EXPOSE 80
